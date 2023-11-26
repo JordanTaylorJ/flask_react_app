@@ -3,7 +3,7 @@ from sqlalchemy import MetaData
 
 metadata = MetaData()
 
-db = SQLAlchemy(metadata = metadata)
+db = SQLAlchemy(metadata=metadata)
 
 class User(db.Model):
     __tablename__ = 'users' 

@@ -25,6 +25,12 @@ def index():
 @app.route('/users/<int:id>')
 def user_by_id(id):
     user = User.query.filter(User.id == id).first()
+
+    if not user:
+        response_body = '<h1>404 user not found</h1>'
+        response = make_response(response_body, 404)
+        return response 
+
     response_body = f'''
         <h1> User:{user.username} </h1>
     '''

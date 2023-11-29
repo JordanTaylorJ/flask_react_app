@@ -1,18 +1,9 @@
 from flask import Flask, make_response
-from flask import request, session 
 from flask_migrate import Migrate 
-#from flask_restful import Resource 
+from flask_restful import Resource 
 
-from models import db, User
-
-app = Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-migrate = Migrate(app, db, render_as_batch=True)
-
-db.init_app(app)
+from config import app, db, api 
+from models import User
 
 @app.route('/')
 def index():

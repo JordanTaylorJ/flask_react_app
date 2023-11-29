@@ -32,7 +32,7 @@ def user_by_id(id):
         return response 
 
     response_body = f'''
-        <h1> User:{user.username} </h1>
+        <h1> User:{user.email} </h1>
     '''
     response = make_response(response_body, 200)
     return response 

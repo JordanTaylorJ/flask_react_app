@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy.orm import validates
 
 from config import db, bcrypt 
 
@@ -18,8 +19,15 @@ class User(db.Model, SerializerMixin):
 
     serialize_rules = ('-logs.user',) 
 
+    @validates('email')
+    def validate_email(self, email):
+        exists = User.query.filter_by(email=email).first()
+        if exists:
+            raise ValueError('This email is already registered to an account - Please login.')
+        return email 
+
     def __repr__(self):
-        return f'<User {self.first_name} {self.last_name}>'
+        return f'<User Name: {self.first_name} {self.last_name}, Email: {self.email}>'
     
 class Log(db.Model, SerializerMixin):
     __tablename__ = 'logs'

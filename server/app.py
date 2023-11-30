@@ -17,16 +17,14 @@ def index():
 def user_by_id(id):
     user = User.query.filter(User.id == id).first()
 
-    if not user:
-        response_body = '<h1>404 user not found</h1>'
-        response = make_response(response_body, 404)
-        return response 
-
-    response_body = f'''
-        <h1> User:{user.email} </h1>
-    '''
-    response = make_response(response_body, 200)
-    return response 
+    if user:
+        body = user.to_dict()
+        status = 200
+    else:
+        body = {'message': f'404: {id} not found'}
+        status = 404
+    
+    return make_response(body, status)
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

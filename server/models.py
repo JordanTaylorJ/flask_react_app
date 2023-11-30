@@ -1,8 +1,9 @@
 from flask_sqlalchemy import SQLAlchemy 
+from sqlalchemy_serializer import SerializerMixin
 
 from config import db, bcrypt 
 
-class User(db.Model):
+class User(db.Model, SerializerMixin):
     __tablename__ = 'users' 
 
     id = db.Column(db.Integer, primary_key = True)
@@ -13,12 +14,14 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
-    logs = db.relationship('Log', backref='log')
+    logs = db.relationship('Log', back_populates='user')
+
+    serialize_rules = ('-logs.user',) 
 
     def __repr__(self):
-        return f'<User {self.name}>'
+        return f'<User {self.first_name} {self.last_name}>'
     
-class Log(db.Model):
+class Log(db.Model, SerializerMixin):
     __tablename__ = 'logs'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -42,7 +45,15 @@ class Log(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
-class Aircraft(db.Model):
+    user = db.relationship('User', back_populates='logs')
+    aircraft = db.relationship('Aircraft', back_populates='logs')
+    
+    serialize_rules = ('-user.logs', '-aircraft.logs',)
+
+    def __repr__(self):
+        return f'<Log {self.date}, {self.total_duration}>'
+
+class Aircraft(db.Model, SerializerMixin):
     __tablename__='aircrafts'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -50,3 +61,10 @@ class Aircraft(db.Model):
     ident = db.Column(db.String)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+
+    logs = db.relationship('Log', back_populates='aircraft')
+
+    serialize_rules = ('-log.aircraft',)
+
+    def __repr__(self):
+        return f'<Aircraft {self.aircraft_type} {self.ident}>'

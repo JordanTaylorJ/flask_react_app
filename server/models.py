@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy 
+from sqlalchemy import CheckConstraint
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
 
@@ -49,7 +50,7 @@ class Log(db.Model, SerializerMixin):
     flight_instructor = db.Column(db.Float)
     dual_received = db.Column(db.Float)
     pilot_in_command = db.Column(db.Float)
-    total_duration = db.Column(db.Float)
+    total_duration = db.Column(db.Float, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
@@ -66,7 +67,7 @@ class Aircraft(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     aircraft_type = db.Column(db.String)
-    ident = db.Column(db.String)
+    ident = db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 

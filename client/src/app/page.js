@@ -1,5 +1,6 @@
-import Login from "./components/Login"
+import Login from "./login/page"
 import Navbar from "./components/Navbar"
+import Logs from "./logs/page"
 
 export default function Home() {
   return (
@@ -7,6 +8,7 @@ export default function Home() {
       <Navbar/>
       <p>Welcome</p>
       <Login/>
+      <Logs/>
     </main>
   )
 }

@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy import CheckConstraint
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
 
@@ -10,7 +11,7 @@ class User(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key = True)
     email = db.Column(db.String(3), unique=True)
-    password = db.Column(db.String(3))
+    _password_hash = db.Column(db.String(3))
     first_name = db.Column(db.String)
     last_name = db.Column(db.String)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
@@ -19,6 +20,17 @@ class User(db.Model, SerializerMixin):
     logs = db.relationship('Log', back_populates='user')
 
     serialize_rules = ('-logs.user',) 
+
+    @hybrid_property
+    def password_hash(self):
+        raise Exception('Password hashed may not be viewed.')
+
+    @_password_hash.setter
+    def password_hash(self, password):
+        password_hash = bcrypt.generate_password_hash(
+            password.encode('utf-8')
+        )
+        self._password_hash, password_hash.decode('utf-8')
 
     @validates('email')
     def validate_email(self, email):

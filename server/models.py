@@ -23,9 +23,9 @@ class User(db.Model, SerializerMixin):
 
     @hybrid_property
     def password_hash(self):
-        raise Exception('Password hashed may not be viewed.')
+        raise Exception('Password hash may not be viewed.')
 
-    @_password_hash.setter
+    @password_hash.setter
     def password_hash(self, password):
         password_hash = bcrypt.generate_password_hash(
             password.encode('utf-8')
@@ -33,7 +33,7 @@ class User(db.Model, SerializerMixin):
         self._password_hash, password_hash.decode('utf-8')
 
     @validates('email')
-    def validate_email(self, email):
+    def validate_email(self, key, email):
         exists = User.query.filter_by(email=email).first()
         if exists:
             raise ValueError('This email is already registered to an account - Please login.')

@@ -14,10 +14,10 @@ def make_users():
     for user_dict in users_list:
         user = User(
             email = user_dict["email"],
-            password = user_dict['password'],
             first_name = user_dict['first_name'],
             last_name = user_dict['last_name']
         )
+        user.password_hash = user_dict['password']
         users.append(user)
     
     db.session.add_all(users)

@@ -1,4 +1,4 @@
-from flask import Flask, make_response
+from flask import Flask, make_response, request, abort, session
 from flask_migrate import Migrate 
 from flask_restful import Resource 
 
@@ -25,6 +25,24 @@ def user_by_id(id):
         status = 404
     
     return make_response(body, status)
+
+class Login(Resource):
+    def post(self):
+        try:
+            user = User.query.filter_by(email=request.get_json()['email']).first()
+            if user.authenticate(request.get_json()['password']):
+                session['user_id'] = user.id 
+                response = make_response(
+                    user.to_dict(),
+                    200
+                )
+                return response
+        except: 
+            abort:(401, "Incorrect email or password.")
+
+api.add_resource(Login, '/login')
+
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

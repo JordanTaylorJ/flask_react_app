@@ -1,9 +1,12 @@
+'use client'
 import React, {useState, useEffect} from 'react';
+
+const UserContext = React.createContext();
 
 const UserProvider = ({children}) => {
     const [user, setUser] = useState('');
 
-    useEffect = (() => {
+    useEffect(() => {
         fetch('/auth')
         .then(response => {
             if (response.ok) {

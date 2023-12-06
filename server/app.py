@@ -28,9 +28,15 @@ def user_by_id(id):
 
 class Login(Resource):
     def post(self):
+        print('here')
+        print(request.get_json())
         try:
-            user = User.query.filter_by(email=request.get_json()['email']).first()
+            email = request.get_json().get('email')
+            print('email', email)
+            user = User.query.filter(User.email == email).first()
+            print('here2')
             if user.authenticate(request.get_json()['password']):
+                print(user, 'user')
                 session['user_id'] = user.id 
                 response = make_response(
                     user.to_dict(),
@@ -41,6 +47,19 @@ class Login(Resource):
             abort:(401, "Incorrect email or password.")
 
 api.add_resource(Login, '/login')
+
+class AuthorizedSession(Resource):
+    def get(self):
+        try:
+            user = User.query.filter_by(id =session['user_id']).first()
+            response = make_response(
+                user.to_dict,
+                200
+            )
+        except:
+            abort(401, "Unauthorized")
+
+api.add_resource(AuthorizedSession, '/auth')
 
 
 

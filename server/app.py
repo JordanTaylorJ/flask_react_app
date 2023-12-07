@@ -26,6 +26,22 @@ def user_by_id(id):
     
     return make_response(body, status)
 
+class Signup(Resource):
+    def post(self):
+        email = request.get_json()['email']
+        password = request.get_json()['password']
+        if email and password:
+            new_user = User(email = email)
+            new_user.password_hash = password
+            db.session.add(new_user)
+            db.session.commit()
+
+            session['user_id'] = new_user.id
+            return new_user.to_dict(), 201
+        return {'error': '422 Unprocessable Entity'}, 422
+
+api.add_resource(Signup, '/signup', endpoint='signup')
+
 class Login(Resource):
     def post(self):
         try:

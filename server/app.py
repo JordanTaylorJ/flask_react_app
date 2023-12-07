@@ -28,15 +28,13 @@ def user_by_id(id):
 
 class Login(Resource):
     def post(self):
-        print('here')
-        print(request.get_json())
         try:
             email = request.get_json().get('email')
-            print('email', email)
             user = User.query.filter(User.email == email).first()
-            print('here2')
+            print('pass', request.get_json()['password'])
+            print('auth', user.authenticate(request.get_json()['password']))
             if user.authenticate(request.get_json()['password']):
-                print(user, 'user')
+                print('here3')
                 session['user_id'] = user.id 
                 response = make_response(
                     user.to_dict(),
@@ -51,11 +49,14 @@ api.add_resource(Login, '/login')
 class AuthorizedSession(Resource):
     def get(self):
         try:
-            user = User.query.filter_by(id =session['user_id']).first()
-            response = make_response(
-                user.to_dict,
-                200
-            )
+            user_id = session['user_id']
+            if user_id:
+                user = User.query.filter(User.id == user_id).first()
+                response = make_response(
+                    user.to_dict,
+                    200
+                )
+                return response 
         except:
             abort(401, "Unauthorized")
 

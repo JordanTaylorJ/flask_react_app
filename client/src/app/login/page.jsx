@@ -5,19 +5,44 @@ import { UserContext } from '../context/user';
 
 const Login = () => {
 
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState('');
     const {setUser} = useContext(UserContext);
 
-    console.log(username, password)
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log('HERE')
+        fetch('http://127.0.0.1:5555/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type':'application/json'
+            },
+            body: JSON.stringify({email, password})
+        })
+        .then(r => {
+            if (r.ok) {
+                console.log('response ok', r.json())
+                //r.json().then(r => setUser(r))
+                setErrors('')
+            }
+            else {
+                console.log('not okay', r)
+                r.json().then(r => setErrors(r))
+            }
+        })
+    }
+
     return(
         <main>
-        <form className='flex flex-wrap justify-center p-24'>
-            <label> Username:
+        <form 
+            className='flex flex-wrap justify-center p-24'
+            onSubmit={(e) => handleSubmit(e)}
+        >
+            <label> Email:
                 <input 
                     className='border-2 border-black'
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                 />
             </label>
             <label> Password:
@@ -30,7 +55,11 @@ const Login = () => {
                 Sign In
             </button>
         </form>
-        <h1></h1>
+        {errors ? 
+            <h1>{errors}</h1>
+            : 
+            <></>
+        }
         <Link className='text-sm' href='/createaccount'>Create Account</Link>
         </main>
     )

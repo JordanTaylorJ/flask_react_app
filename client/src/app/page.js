@@ -1,9 +1,13 @@
-import Link from "next/link"
-export default function Home() {
+'use client'
+import Link from "next/link";
+import React, {useContext} from 'react';
 
-  let user = false
+import { UserContext } from "./context/user";
 
-  
+export default function App() {
+
+  const {user} = useContext(UserContext);
+  console.log('user', user)
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-12">
       {user

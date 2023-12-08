@@ -2,11 +2,11 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://127.0.0.1:5555/",
+  
   "scripts": {
-    "dev": "next dev",
+    "dev": "PORT=4000, next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "PORT=4000, next start",
     "lint": "next lint"
   },
   "dependencies": {

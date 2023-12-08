@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate 
 from flask_restful import Api 
@@ -17,9 +18,10 @@ metadata = MetaData(naming_convention={
 })
 
 db = SQLAlchemy(metadata=metadata)
-migrate = Migrate(app, db, render_as_batch=True)
 db.init_app(app)
 
+CORS(app)
+migrate = Migrate(app, db, render_as_batch=True)
 bcrypt = Bcrypt(app)
 
 api = Api(app)

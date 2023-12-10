@@ -26,10 +26,12 @@ def user_by_id(id):
 
 class Signup(Resource):
     def post(self):
+        first_name = request.get_json()['firstName']
+        last_name = request.get_json()['lastName']
         email = request.get_json()['email']
         password = request.get_json()['password']
         if email and password:
-            new_user = User(email = email)
+            new_user = User(first_name=first_name, last_name=last_name, email=email)
             new_user.password_hash = password
             db.session.add(new_user)
             db.session.commit()
@@ -59,6 +61,15 @@ class Login(Resource):
             abort:(401, "Incorrect email or password.")
 
 api.add_resource(Login, '/login')
+
+class Logout(Resource):
+    def delete(self):
+        session.pop('user_id', None)
+        print(session)
+        return make_response('', 204)
+
+api.add_resource(Logout, 'logout')
+        
 
 class AuthorizedSession(Resource):
     def get(self):

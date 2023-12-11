@@ -26,8 +26,8 @@ def user_by_id(id):
 
 class Signup(Resource):
     def post(self):
-        first_name = request.get_json()['firstName']
-        last_name = request.get_json()['lastName']
+        first_name = request.get_json()['first_name']
+        last_name = request.get_json()['last_name']
         email = request.get_json()['email']
         password = request.get_json()['password']
         if email and password:
@@ -47,10 +47,7 @@ class Login(Resource):
         try:
             email = request.get_json().get('email')
             user = User.query.filter(User.email == email).first()
-            print('pass', request.get_json()['password'])
-            print('auth', user.authenticate(request.get_json()['password']))
             if user.authenticate(request.get_json()['password']):
-                print('here3')
                 session['user_id'] = user.id 
                 response = make_response(
                     user.to_dict(),
@@ -65,25 +62,18 @@ api.add_resource(Login, '/login')
 class Logout(Resource):
     def delete(self):
         session.pop('user_id', None)
-        print(session)
         return make_response('', 204)
 
-api.add_resource(Logout, 'logout')
+api.add_resource(Logout, '/logout')
         
 
 class AuthorizedSession(Resource):
     def get(self):
-        try:
-            user_id = session['user_id']
-            if user_id:
-                user = User.query.filter(User.id == user_id).first()
-                response = make_response(
-                    user.to_dict,
-                    200
-                )
-                return response 
-        except:
-            abort(401, "Unauthorized")
+        if session.get('user_id'):
+            user = User.query.filter(User.id == session['user_id']).first()
+            return user.to_dict(), 200
+
+        abort(401, "Unauthorized")
 
 api.add_resource(AuthorizedSession, '/auth')
 

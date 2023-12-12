@@ -26,8 +26,8 @@ def user_by_id(id):
 
 class Signup(Resource):
     def post(self):
-        first_name = request.get_json()['first_name']
-        last_name = request.get_json()['last_name']
+        first_name = request.get_json()['firstName']
+        last_name = request.get_json()['lastName']
         email = request.get_json()['email']
         password = request.get_json()['password']
         if email and password:
@@ -49,11 +49,8 @@ class Login(Resource):
             user = User.query.filter(User.email == email).first()
             if user.authenticate(request.get_json()['password']):
                 session['user_id'] = user.id 
-                response = make_response(
-                    user.to_dict(),
-                    200
-                )
-                return response
+                return user.to_dict(), 200
+
         except: 
             abort:(401, "Incorrect email or password.")
 

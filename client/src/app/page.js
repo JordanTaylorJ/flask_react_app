@@ -12,7 +12,7 @@ export default function App() {
     <main className="flex min-h-screen flex-col items-center justify-between p-12">
       {user
       ? 
-        <h1>Welcome User</h1>
+        <h1>Welcome {user.first_name}</h1>
       :
         <>
           <h1 className='text-3xl'>Digital Logbook</h1>

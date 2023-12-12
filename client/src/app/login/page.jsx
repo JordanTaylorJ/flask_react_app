@@ -8,12 +8,11 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState('');
-    const {setUser} = useContext(UserContext);
+    const {user, setUser} = useContext(UserContext);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('HERE')
-        fetch('http://127.0.0.1:5555/login', {
+        fetch('/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type':'application/json'
@@ -22,8 +21,7 @@ const Login = () => {
         })
         .then(r => {
             if (r.ok) {
-                console.log('response ok', r.json())
-                //r.json().then(r => setUser(r))
+                r.json().then(r => setUser(r))
                 setErrors('')
             }
             else {
@@ -31,10 +29,15 @@ const Login = () => {
                 r.json().then(r => setErrors(r))
             }
         })
-    }
+    }   
 
     return(
         <main>
+            { user ?
+            <h1>{user.first_name}</h1>
+            :
+            <></>
+            }
         <form 
             className='flex flex-wrap justify-center p-24'
             onSubmit={(e) => handleSubmit(e)}
